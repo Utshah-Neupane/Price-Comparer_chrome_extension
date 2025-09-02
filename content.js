@@ -2,13 +2,21 @@ document.addEventListener("DOMContentLoaded", () => {
     let scrapePrice = document.getElementById('scrapePrice');
     let price_value = document.getElementById('price_value');
 
+    let currentPrice = '';
+    
     chrome.runtime.onMessage.addListener((request) => {
-        let price = request.price;
-
-        let h1 = document.createElement('h1');
-        h1.innerText = `Price: ${price}`;
-        price_value.appendChild(h1);
-
+        if (request.price) {
+            currentPrice = request.price;
+            // Only update the price display if we're not in the middle of a comparison
+            if (!document.querySelector('.comparison-prices')) {
+                price_value.innerHTML = `
+                    <div class="current-price">
+                        <span class="current-site">Current Price</span>
+                        <span class="current-amount">${currentPrice}</span>
+                    </div>
+                `;
+            }
+        }
     });
 
 
@@ -71,6 +79,9 @@ document.addEventListener("DOMContentLoaded", () => {
             chrome.runtime.sendMessage({ price: 'No active tab' });
             return;
         }
+        
+        // Get the current host from the URL
+        const currentHost = new URL(tab.url).hostname;
     
         // 2) run extractor IN THE PAGE to get a decent query (selected text > product title > page title)
         const [{ result: query }] = await chrome.scripting.executeScript({
@@ -116,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
             {
                 action: 'comparePrices',
                 query,
-                currentHost: window.location.hostname,
+                currentHost: currentHost,
             },
             (response) => {
                 // remove loading if present
@@ -126,13 +137,62 @@ document.addEventListener("DOMContentLoaded", () => {
                 const results = response?.results || {};
                 const container = document.getElementById('price_value');
                 if (container) {
+                    container.innerHTML = ''; // Clear previous results
                     const wrap = document.createElement('div');
-                    wrap.innerHTML = `
-                        <h1>Comparison</h1>
-                        <div>Kroger: ${results.kroger || '-'}</div>
-                        <div>Walmart: ${results.walmart || '-'}</div>
-                        <div>Target: ${results.target || '-'}</div>
-                    `;
+                    
+                    // Add current site's price at the top
+                    if (currentPrice) {
+                        const currentSite = currentHost.includes('kroger.com') ? 'Kroger' : 
+                                         currentHost.includes('walmart.com') ? 'Walmart' :
+                                         currentHost.includes('target.com') ? 'Target' : 'Current Site';
+                        
+                        wrap.innerHTML = `
+                            <h1>Price Comparison</h1>
+                            <div class="current-price">
+                                <span class="current-site">${currentSite}</span>
+                                <span class="current-amount">${currentPrice}</span>
+                            </div>
+                            <div class="comparison-header">Other Retailers</div>
+                        `;
+                    } else {
+                        wrap.innerHTML = '<h1>Price Comparison</h1>';
+                    }
+                    
+                    // Add comparison prices
+                    const comparisonDiv = document.createElement('div');
+                    comparisonDiv.className = 'comparison-prices';
+                    
+                    if (!currentHost.includes('kroger.com') && results.kroger) {
+                        const row = document.createElement('div');
+                        row.className = 'price-row';
+                        row.innerHTML = `
+                            <span class="price-store">Kroger</span>
+                            <span class="price-amount">${results.kroger}</span>
+                        `;
+                        comparisonDiv.appendChild(row);
+                    }
+                    
+                    if (!currentHost.includes('walmart.com') && results.walmart) {
+                        const row = document.createElement('div');
+                        row.className = 'price-row';
+                        row.innerHTML = `
+                            <span class="price-store">Walmart</span>
+                            <span class="price-amount">${results.walmart}</span>
+                        `;
+                        comparisonDiv.appendChild(row);
+                    }
+                    
+                    if (!currentHost.includes('target.com') && results.target) {
+                        const row = document.createElement('div');
+                        row.className = 'price-row';
+                        row.innerHTML = `
+                            <span class="price-store">Target</span>
+                            <span class="price-amount">${results.target}</span>
+                        `;
+                        comparisonDiv.appendChild(row);
+                    }
+                    
+                    wrap.appendChild(comparisonDiv);
                     container.appendChild(wrap);
                 }
             }

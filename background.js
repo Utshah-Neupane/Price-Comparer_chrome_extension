@@ -6,9 +6,11 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
         const query = msg.query;
         const currentHost = msg.currentHost || '';
   
-        // Build search pages for other sites
+        // Build search pages for other sites (exclude current host)
         const targets = [];
-        if (!/kroger\.com/.test(currentHost)) {
+        
+        // Only add Kroger if current host is not Kroger
+        if (!currentHost.includes('kroger.com')) {
           targets.push({
             site: 'kroger',
             url: `https://www.kroger.com/search?query=${encodeURIComponent(query)}`,
@@ -31,7 +33,9 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
             ],
           });
         }
-        if (!/walmart\.com/.test(currentHost)) {
+        
+        // Only add Walmart if current host is not Walmart
+        if (!currentHost.includes('walmart.com')) {
           targets.push({
             site: 'walmart',
             url: `https://www.walmart.com/search?q=${encodeURIComponent(query)}`,
@@ -56,7 +60,9 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
             ],
           });
         }
-        if (!/target\.com/.test(currentHost)) {
+        
+        // Only add Target if current host is not Target
+        if (!currentHost.includes('target.com')) {
           targets.push({
             site: 'target',
             url: `https://www.target.com/s?searchTerm=${encodeURIComponent(query)}`,

@@ -2,7 +2,7 @@
 
 A powerful Chrome extension that helps you compare product prices across multiple retailers with a single click. Currently supports Walmart, Target, and Kroger.
 
-![Price Comparer Demo](https://via.placeholder.com/400x500/667eea/ffffff?text=Price+Comparer+Demo)
+![Price Comparer Demo](https://www.loom.com/share/74126bf0f98548f6a68b5f9e340d037c?sid=6b536e8e-86cb-445b-a1dc-0235eba0fb18)
 
 ## ✨ Features
 
@@ -14,16 +14,11 @@ A powerful Chrome extension that helps you compare product prices across multipl
 
 ## 🚀 Installation
 
-### Method 1: Load Unpacked Extension (For Development)
-
 1. Clone or download this repository
 2. Open Chrome and go to `chrome://extensions/`
 3. Enable "Developer mode" (toggle in top-right corner)
 4. Click "Load unpacked" and select the extension directory
 
-### Method 2: Install from Chrome Web Store (Coming Soon)
-
-> ⚠️ Note: This extension is not yet published to the Chrome Web Store. Follow the "Load Unpacked" instructions above to use it.
 
 ## 🛠️ How It Works
 
@@ -47,39 +42,8 @@ A powerful Chrome extension that helps you compare product prices across multipl
 - ✅ [Target](https://www.target.com)
 - ✅ [Kroger](https://www.kroger.com)
 
-## 📂 Project Structure
 
-```
-Price-Comparer_chrome_extension/
-├── manifest.json    # Extension configuration
-├── background.js    # Background service worker
-├── content.js       # Content scripts
-├── index.html       # Popup UI
-├── style.css        # Styling
-├── README.md        # This file
-└── LICENSE          # License information
-```
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-### Setup for Development
-
-1. Fork the repository
-2. Clone your fork
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
 
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📬 Contact
-
-For feature requests or bug reports, please [open an issue](https://github.com/yourusername/Price-Comparer_chrome_extension/issues).
-
----
-
-Made with ❤️ by [Your Name]
